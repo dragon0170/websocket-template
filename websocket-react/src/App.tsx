@@ -25,7 +25,7 @@ const client = new Client({
 });
 
 client.onConnect = function () {
-  client.subscribe('/search-ticle-result', (message) => {
+  client.subscribe('/user/search-ticle-result', (message) => {
     if (message.body) {
       console.log(message.body);
       alert("got message with body " + message.body)
