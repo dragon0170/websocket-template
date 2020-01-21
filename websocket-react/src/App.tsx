@@ -3,6 +3,8 @@ import { Client } from '@stomp/stompjs';
 import logo from './logo.svg';
 import './App.css';
 
+const accessToken = '';
+
 const searchTicleBody = {
   search_user_id: 1,
   keyword:"abc",
@@ -11,6 +13,9 @@ const searchTicleBody = {
 
 const client = new Client({
   brokerURL: "ws://localhost:8000/ticle/api/v1/websocket",
+  connectHeaders: {
+    Authorization: `JWT ${accessToken}`,
+  },
   debug: function (str) {
     console.log(str);
   },
@@ -27,7 +32,7 @@ client.onConnect = function () {
     } else {
       alert("got empty message");
     }
-  });
+  }, { Authorization: `JWT ${accessToken}` });
 };
 
 client.onStompError = function (frame) {
@@ -71,7 +76,11 @@ const App: React.FC = () => {
         </button>
         <button
           onClick={() => {
-            client.publish({ destination: '/search-ticle', body: JSON.stringify(searchTicleBody)});
+            client.publish({
+              destination: '/search-ticle',
+              body: JSON.stringify(searchTicleBody),
+              headers: { Authorization: `JWT ${accessToken}` },
+            });
           }}
         >
           send
